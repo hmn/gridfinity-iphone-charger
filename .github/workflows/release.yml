@@ -29,7 +29,12 @@ jobs:
 
       - name: Install dependencies
         run: |
+          uv venv
           uv pip install -e .
+
+      - name: Update submodules
+        run: |
+          git submodule update --init --recursive
 
       - name: Generate flat file
         run: |
