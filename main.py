@@ -225,8 +225,10 @@ def generate_flat_file(input_file, output_file):
         print(f"Successfully generated {output_file} from {input_file}")
     except FileNotFoundError:
         print(f"Input file {input_file} not found.")
+        raise
     except Exception as e:
         print(f"Error generating flat file: {e}")
+        raise
 
 
 def main():
@@ -235,7 +237,11 @@ def main():
     output_file = "flat/gridfinity-iphone-charger.scad"
     print(f"Input file: {input_file}")
     print(f"Output file: {output_file}")
-    generate_flat_file(input_file, output_file)
+    try:
+        generate_flat_file(input_file, output_file)
+    except Exception as e:
+        print(f"ERROR: {e}")
+        exit(1)
 
 
 if __name__ == "__main__":
