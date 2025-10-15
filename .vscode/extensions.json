@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "antyos.openscad",
+    "leathong.openscad-language-support",
+    "charliermarsh.ruff"
+  ]
+}

@@ -1,0 +1,16 @@
+__pycache__/
+.venv/
+.egg/
+dist/
+build/
+*.egg-info/
+*.bak
+*.swp
+*.tmp
+*.log
+*.cache
+*.pyc
+__pypackages__/
+htmlcov/
+.coverage
+flat/*.scad
