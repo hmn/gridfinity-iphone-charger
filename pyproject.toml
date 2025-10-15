@@ -16,9 +16,20 @@ packages = [] # Don't include any packages, we just want the main.py
 testpaths = ["tests"]
 python_files = "test_*.py"
 
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "gridfinity-rebuilt-openscad/**",
+    "tests/**",
+    ".venv/**",
+    "venv/**",
+    "*/site-packages/**",
+]
+
 [tool.ruff]
 target-version = "py313"
 line-length = 100
+exclude = ["gridfinity-rebuilt-openscad/**"]
 
 [tool.ruff.lint]
 select = [

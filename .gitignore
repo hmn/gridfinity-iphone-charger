@@ -14,3 +14,6 @@ __pypackages__/
 htmlcov/
 .coverage
 flat/*.scad
+.pytest_cache/
+.ruff_cache/
+.uv/
