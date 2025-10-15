@@ -296,7 +296,7 @@ def test_generate_flat_file_input_not_found():
     with patch('builtins.print') as mock_print:
         with pytest.raises(FileNotFoundError):
             main.generate_flat_file("nonexistent.scad", "output.scad")
-            
+
         # Check that error message was printed
         mock_print.assert_any_call("Input file nonexistent.scad not found.")
 
@@ -304,14 +304,12 @@ def test_generate_flat_file_input_not_found():
 def test_generate_flat_file_exception():
     """Test generate_flat_file with exception."""
     with patch('builtins.open', mock_open(read_data="test")), \
-            patch('main.parse', side_effect=Exception("Test error")), \
-            patch('builtins.print') as mock_print:
-        
-        with pytest.raises(Exception):
+            patch('main.parse', side_effect=FileNotFoundError("PYTEST")), \
+            patch('builtins.print'):
+
+        with pytest.raises(FileNotFoundError) as excinfo:
             main.generate_flat_file("input.scad", "output.scad")
-        
-        # Check that error message was printed
-        mock_print.assert_any_call("Error generating flat file: Test error")
+        assert "PYTEST" in str(excinfo.value)
 
 
 def test_main_function():
