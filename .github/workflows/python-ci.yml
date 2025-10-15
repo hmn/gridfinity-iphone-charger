@@ -61,7 +61,7 @@ jobs:
           fi
 
       - name: Upload generated flat file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: flat-scad-file
           path: flat/gridfinity-iphone-charger.scad
