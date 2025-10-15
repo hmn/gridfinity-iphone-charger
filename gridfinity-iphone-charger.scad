@@ -177,9 +177,7 @@ $fn = 100;
 // print debugging information
 debug = true;
 // Color of the main tray model in the preview
-tray_model_color = "#FFFFFF";
-// Color of the test model in the preview
-test_model_color = "#00AE42";
+model_color = "#FFFFFF";
 
 /* CONFIG FUNCTIONS */
 
@@ -249,7 +247,7 @@ if (test_phone_cutout) {
     echo(str("Test phone frame width: ", test_phone_frame_width));
     echo(str("Phone Cutout Height: ", phone_height()));
   }
-  color(test_model_color)
+  color(model_color)
     translate([0, y_shift_models(), 0])
       difference() {
         resize([phone_length() + test_phone_frame_width, phone_width() + test_phone_frame_width, phone_height()])
@@ -276,7 +274,7 @@ if (test_charger_cutout) {
     echo("=== TEST CHARGER CUTOUT ===");
   }
   test_bin_height = charger_height() + 1.0;
-  color(test_model_color)
+  color(model_color)
     translate([0, y_shift_models(), 0])
       difference() {
         translate([0, 0, test_bin_height / 2])
@@ -319,7 +317,7 @@ if (charging_tray) {
     echo("================");
   }
 
-  color(tray_model_color)
+  color(model_color)
     translate([0, -y_shift_models(), 0])
       difference() {
         union() {
