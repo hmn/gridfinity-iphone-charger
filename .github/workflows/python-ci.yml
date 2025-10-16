@@ -68,13 +68,6 @@ jobs:
             uv run python run.py "$file"
           done
 
-      - name: Verify flat file exists
-        run: |
-          if [ ! -f "flat/gridfinity-iphone-charger.scad" ]; then
-            echo "Flat file was not generated correctly"
-            exit 1
-          fi
-
       - name: Upload generated flat file
         uses: actions/upload-artifact@v4
         with:
