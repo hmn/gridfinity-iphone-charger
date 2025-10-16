@@ -48,6 +48,7 @@ select = [
 ignore = [
     "E501", # line too long, handled by formatter
 ]
+exclude = ["src/gridfinity-rebuilt-openscad/**"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["tests"]
