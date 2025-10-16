@@ -43,7 +43,7 @@ module charger_cutout(
     radius = charger_diameter / 2 - plug_width / 2 + cable_diameter;
     x_offset = radius * cos(cable_cutout_angle);
     y_offset = radius * sin(cable_cutout_angle);
-    z_offset = -cable_cutout_height;
+    z_offset = -cable_cutout_height + cable_diameter / 2;
     // - make a cutout though the bottom of the tray for the cable to go through
     // - make notch where the cable should go through
     translate([x_offset, y_offset, z_offset])

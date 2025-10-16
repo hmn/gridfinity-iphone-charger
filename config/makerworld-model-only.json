@@ -1,0 +1,8 @@
+{
+    "input_file": "src/openscad.scad",
+    "output_file": "flat/model-only.scad",
+    "modifiers": {
+        "DEBUG": "debug.scad",
+        "MULTIPLATE": "empty.scad"
+    }
+}

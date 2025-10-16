@@ -63,14 +63,14 @@ custom_phone_corner_smoothness = 6;
 phone_cover_thickness = 0.0;
 // Phone tolerance (per side)
 phone_tolerance = 0.3;
-// Phone insert offset. Reduce the height of the phone cutout so the phone can be inserted more easily
-phone_insert_height = 0.5;
+// Phone insert offset. Reduce the phone cutout depth so the phone fits in the cutout. Could be used with some covers, or if buttons conflict with the tray
+phone_insert_height = 0.0;
 // A cutout area to allow for a camera bump on the back of the phone
 phone_camera_cutout_height = 3.0;
 
 function phone_length() = (phone_preset == 0 ? custom_phone_length : phone_presets()[0]) + 2 * phone_tolerance + 2 * phone_cover_thickness;
 function phone_width() = (phone_preset == 0 ? custom_phone_width : phone_presets()[1]) + 2 * phone_tolerance + 2 * phone_cover_thickness;
-function phone_height() = (phone_preset == 0 ? custom_phone_height : phone_presets()[2]) / 2 - phone_insert_height + phone_cover_thickness;
+function phone_height() = (phone_preset == 0 ? custom_phone_height : phone_presets()[2]) / 2 - phone_insert_height;
 function phone_corner_curve() = (phone_preset == 0 ? custom_phone_corner_curve : phone_presets()[3]);
 function phone_corner_smoothness() = (phone_preset == 0 ? custom_phone_corner_smoothness : phone_presets()[4]);
 
@@ -157,98 +157,150 @@ printable_hole_top = true;
 
 hole_options = bundle_hole_options(refined_holes, magnet_holes, screw_holes, crush_ribs, chamfer_height_holes, printable_hole_top);
 
-/* INCLUDES */
-
-/* [Gridfinity Defaults] */
+/* [Hidden] */
 
 include <gridfinity-rebuilt-openscad/src/core/standard.scad>
 include <gridfinity-rebuilt-openscad/src/core/gridfinity-rebuilt-utility.scad>
 include <gridfinity-rebuilt-openscad/src/core/gridfinity-rebuilt-holes.scad>
-use <modules/tray.scad>
-use <modules/charger.scad>
-use <modules/phone.scad>
+
+/* [Hidden] */
 
 $fa = 8;
 $fs = 0.25; // .01
 $fn = 100;
 
-/* [Debug settings] */
+include <std/config.scad>
+include <std/debug.scad>
+use <modules/tray.scad>
+use <modules/charger.scad>
+use <modules/phone.scad>
 
-// print debugging information
-debug = true;
-// Color of the main tray model in the preview
-model_color = "#FFFFFF";
+module phone_charger_tray_model(debug=true, color="white") {
+    bin_obj = new_bin(
+      [gridx, gridy],
+      bin_height(),
+      0, // fill_height
+      false, // include_lip
+      hole_options,
+      only_corners,
+      false // thumbscrew
+    );
 
-/* CONFIG FUNCTIONS */
+    if (debug) {
+      echo("=== BIN INFO ===");
+      echo("Height breakdown:");
+      echo(bin_get_height_breakdown(bin_obj));
+      echo("================");
+    }
 
-// make sure where is space below the phone camera/wedge cutout for the cable
-// TODO: use gridfinity base height functionality
-function auto_gridz() =
-  let (
-    bottom_space = 2, // space below the charger cutout to the bottom of the bin
-    needed_height = charger_tray_height() + cable_diameter() + phone_height() + bottom_space
-  ) ceil(needed_height / 7);
-function bin_height() = gridz > 0 ? height(gridz, gridz_define, enable_zsnap) : height(auto_gridz(), gridz_define, enable_zsnap);
-// TODO: use gridfinity base grid size functionality
-function tray_length() = gridx * 42;
-function y_shift_models() = charging_tray && (test_phone_cutout || test_charger_cutout) ? (.1 + gridy / 2) * 42 : 0;
+    color(color)
+        difference() {
+          union() {
+            difference() {
+              // create bin
+              bin_render(bin_obj) {
+                // Create solid bin
+                //bin_subdivide(bin_obj, [1, 1]) {
 
-if (debug) {
-  echo("=== SETTINGS ===");
-  echo("Models:");
-  echo(str("  Charging Tray: ", charging_tray));
-  echo(str("  Test Phone Cutout: ", test_phone_cutout));
-  echo(str("  Test Charger Cutout: ", test_charger_cutout));
-  echo("Phone:");
-  echo(str("  Length: ", phone_length()));
-  echo(str("  Width: ", phone_width()));
-  echo(str("  Height: ", phone_height()));
-  echo(str("  Corner Curve: ", phone_corner_curve()));
-  echo(str("  Corner Smoothness: ", phone_corner_smoothness()));
-  echo(str("  Cover Thickness: ", phone_cover_thickness));
-  echo(str("  Tolerance: ", phone_tolerance));
-  echo(str("  Insert Height: ", phone_insert_height));
-  echo(str("  Camera Cutout Height: ", phone_camera_cutout_height));
-  echo("Charger:");
-  echo(str("  Diameter: ", charger_diameter()));
-  echo(str("  Height: ", charger_height()));
-  echo(str("  Cable Diameter: ", cable_diameter()));
-  echo(str("  Cable Plug Width: ", cable_plug_width()));
-  echo(str("  Charger Cutout Tolerance: ", charger_cutout_tolerance));
-  echo(str("  Cable Cutout Tolerance: ", cable_cutout_tolerance));
-  echo(str("  Cable Plug Clearance: ", cable_plug_clearance));
-  echo(str("  Cable Cutout Angle: ", cable_cutout_angle));
-  echo("Charger Tray:");
-  echo(str("  Top Padding: ", charger_tray_top_padding));
-  echo(str("  Bottom Padding: ", charger_tray_bottom_padding));
-  echo(str("  Wedge Height: ", charger_tray_wedge_height));
-  echo(str("  Tray Height: ", charger_tray_height()));
-  echo("Gridfinity:");
-  echo(str("  Grid Size: ", [gridx, gridy]));
-  echo(str("  Bin Height Setting (gridz): ", gridz));
-  echo(str("  Bin Height (mm): ", bin_height()));
-  // echo(str("  Base Height (mm): ", base_height()));
-  echo(str("  Tray Length (mm): ", tray_length()));
-  echo("Calculated Values:");
-  echo(str("  Auto Gridz (7mm units): ", auto_gridz()));
-  echo(str("  Phone Cutout Height (mm): ", phone_camera_cutout_height));
-  echo(str("  Charger Cutout Height (mm): ", charger_height()));
-  echo("================");
+                //}
+              }
+              // cutout for phone
+              phone_cutout_total_height = phone_height() + charger_tray_height();
+              phone_cutout_z_shift = 0.01 + bin_height() - phone_cutout_total_height;
+              if (debug) {
+                echo(str("Phone Cutout Total Height: ", phone_cutout_total_height));
+                echo(str("Phone Cutout Z Shift: ", phone_cutout_z_shift));
+              }
+              translate([0, 0, phone_cutout_z_shift])
+                linear_extrude(height=phone_cutout_total_height)
+                  phone_2d_shape(
+                    phone_length(),
+                    phone_width(),
+                    phone_corner_curve(),
+                    phone_corner_smoothness()
+                  );
+            }
+
+            // charger tray
+            charger_tray_total_height = charger_tray_height() + 0.02;
+            charger_tray_z_shift = bin_height() - charger_tray_total_height / 2 - phone_height() - 0.01;
+            if (debug) {
+              echo(str("Charger Tray Total Height: ", charger_tray_total_height));
+              echo(str("Charger Tray Z Shift: ", charger_tray_z_shift));
+            }
+            translate([0, 0, charger_tray_z_shift])
+              color("lightblue")
+                charger_tray(
+                  phone_length(), // phone_length
+                  phone_width(), // phone_width
+                  charger_diameter(), // charger diameter
+                  charger_tray_top_padding,
+                  charger_tray_bottom_padding,
+                  phone_camera_cutout_height, // phone_camera_cutout_height
+                  charger_height(), // charger_height
+                  charger_tray_wedge_height, // wedge_height
+                  debug
+                );
+          }
+
+          // charger cutout
+          charger_cutout_z_shift = bin_height() - phone_height() - charger_height() / 2 - 0.01;
+          if (debug) {
+            echo(str("Charger Cutout Z Shift: ", charger_cutout_z_shift));
+          }
+          translate([0, 0, charger_cutout_z_shift])
+            charger_cutout(
+              bin_height=bin_height(),
+              tray_length=tray_length(),
+              charger_height=charger_height(),
+              charger_diameter=charger_diameter(),
+              plug_width=cable_plug_width(),
+              cable_diameter=cable_diameter(),
+              cable_cutout_angle=cable_cutout_angle,
+              debug=debug
+            );
+        }
 }
 
-/* DRAW MODELS */
+module test_charger_cutout_model(debug=true, color="#00AE42") {
+    if (debug) {
+      echo("=== TEST CHARGER CUTOUT ===");
+    }
+    test_bin_height = charger_height() + 1.0;
+    color(color)
+        difference() {
+        translate([0, 0, test_bin_height / 2])
+            cylinder(h=test_bin_height, d=charger_diameter() + 2, center=true, $fn=100);
 
-if (test_phone_cutout) {
-  if (debug) {
-    echo("=== TEST PHONE CUTOUT ===");
-  }
-  test_phone_frame_width = 3.0;
-  if (debug) {
-    echo(str("Test phone frame width: ", test_phone_frame_width));
-    echo(str("Phone Cutout Height: ", phone_height()));
-  }
-  color(model_color)
-    translate([0, y_shift_models(), 0])
+        test_charger_cutout_z_shift = (charger_height() + 0.02) / 2 + 1.00;
+        if (debug) {
+            echo(str("Test bin height: ", test_bin_height));
+            echo(str("Test charger cutout Z shift: ", test_charger_cutout_z_shift));
+        }
+        translate([0, 0, test_charger_cutout_z_shift])
+            charger_cutout(
+            bin_height=test_bin_height,
+            tray_length=tray_length(),
+            charger_height=charger_height(),
+            charger_diameter=charger_diameter(),
+            plug_width=cable_plug_width(),
+            cable_diameter=cable_diameter(),
+            cable_cutout_angle=cable_cutout_angle,
+            debug=debug
+            );
+        }
+}
+
+module test_phone_cutout_model(debug=true, color="#00AE42") {
+    if (debug) {
+      echo("=== TEST PHONE CUTOUT ===");
+    }
+    test_phone_frame_width = 3.0;
+    if (debug) {
+      echo(str("Test phone frame width: ", test_phone_frame_width));
+      echo(str("Phone Cutout Height: ", phone_height()));
+    }
+    color(color)
       difference() {
         resize([phone_length() + test_phone_frame_width, phone_width() + test_phone_frame_width, phone_height()])
           linear_extrude(height=phone_height())
@@ -269,120 +321,28 @@ if (test_phone_cutout) {
       }
 }
 
-if (test_charger_cutout) {
-  if (debug) {
-    echo("=== TEST CHARGER CUTOUT ===");
-  }
-  test_bin_height = charger_height() + 1.0;
-  color(model_color)
-    translate([0, y_shift_models(), 0])
-      difference() {
-        translate([0, 0, test_bin_height / 2])
-          cylinder(h=test_bin_height, d=charger_diameter() + 2, center=true, $fn=100);
+/* MODIFIER DEBUG */
+_debug = true;
+/* MODIFIER DEBUG */
 
-        test_charger_cutout_z_shift = (charger_height() + 0.02) / 2 + 1.00;
-        if (debug) {
-          echo(str("Test bin height: ", test_bin_height));
-          echo(str("Test charger cutout Z shift: ", test_charger_cutout_z_shift));
-        }
-        translate([0, 0, test_charger_cutout_z_shift])
-          charger_cutout(
-            bin_height=test_bin_height,
-            tray_length=tray_length(),
-            charger_height=charger_height(),
-            charger_diameter=charger_diameter(),
-            plug_width=cable_plug_width(),
-            cable_diameter=cable_diameter(),
-            cable_cutout_angle=cable_cutout_angle,
-            debug=debug
-          );
-      }
-}
+/* MODIFIER COLOR */
+_color = "white";
+/* MODIFIER COLOR */
 
+/* MODIFIER MULTIPLATE */
+/* MODIFIER MULTIPLATE */
+
+/* MODIFIER DRAW */
 if (charging_tray) {
-  bin_obj = new_bin(
-    [gridx, gridy],
-    bin_height(),
-    0, // fill_height
-    false, // include_lip
-    hole_options,
-    only_corners,
-    false // thumbscrew
-  );
-
-  if (debug) {
-    echo("=== BIN INFO ===");
-    echo("Height breakdown:");
-    echo(bin_get_height_breakdown(bin_obj));
-    echo("================");
-  }
-
-  color(model_color)
-    translate([0, -y_shift_models(), 0])
-      difference() {
-        union() {
-          difference() {
-            // create bin
-            bin_render(bin_obj) {
-              // Create solid bin
-              //bin_subdivide(bin_obj, [1, 1]) {
-
-              //}
-            }
-            // cutout for phone
-            phone_cutout_total_height = phone_height() + charger_tray_height();
-            phone_cutout_z_shift = 0.01 + bin_height() - phone_cutout_total_height;
-            if (debug) {
-              echo(str("Phone Cutout Total Height: ", phone_cutout_total_height));
-              echo(str("Phone Cutout Z Shift: ", phone_cutout_z_shift));
-            }
-            translate([0, 0, phone_cutout_z_shift])
-              linear_extrude(height=phone_cutout_total_height)
-                phone_2d_shape(
-                  phone_length(),
-                  phone_width(),
-                  phone_corner_curve(),
-                  phone_corner_smoothness()
-                );
-          }
-
-          // charger tray
-          charger_tray_total_height = charger_tray_height() + 0.02;
-          charger_tray_z_shift = bin_height() - charger_tray_total_height / 2 - phone_height() - 0.01;
-          if (debug) {
-            echo(str("Charger Tray Total Height: ", charger_tray_total_height));
-            echo(str("Charger Tray Z Shift: ", charger_tray_z_shift));
-          }
-          translate([0, 0, charger_tray_z_shift])
-            color("lightblue")
-              charger_tray(
-                phone_length(), // phone_length
-                phone_width(), // phone_width
-                charger_diameter(), // charger diameter
-                charger_tray_top_padding,
-                charger_tray_bottom_padding,
-                phone_camera_cutout_height, // phone_camera_cutout_height
-                charger_height(), // charger_height
-                charger_tray_wedge_height, // wedge_height
-                debug // debug
-              );
-        }
-
-        // charger cutout
-        charger_cutout_z_shift = bin_height() - phone_height() - charger_height() / 2 - 0.01;
-        if (debug) {
-          echo(str("Charger Cutout Z Shift: ", charger_cutout_z_shift));
-        }
-        translate([0, 0, charger_cutout_z_shift])
-          charger_cutout(
-            bin_height=bin_height(),
-            tray_length=tray_length(),
-            charger_height=charger_height(),
-            charger_diameter=charger_diameter(),
-            plug_width=cable_plug_width(),
-            cable_diameter=cable_diameter(),
-            cable_cutout_angle=cable_cutout_angle,
-            debug=debug
-          );
-      }
+  translate([0, -y_shift_models(), 0])
+    phone_charger_tray_model(_debug, _color);
 }
+if (test_phone_cutout) {
+  translate([0, y_shift_models(), 0])
+    test_phone_cutout_model(_debug, _color);
+}
+if (test_charger_cutout) {
+  translate([0, y_shift_models(), 0])
+    test_charger_cutout_model(_debug, _color);
+}
+/* MODIFIER DRAW */

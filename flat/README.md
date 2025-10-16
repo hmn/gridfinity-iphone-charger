@@ -37,5 +37,18 @@ uv run pytest
 To regenerate the files in this folder, follow these steps:
 
 ```bash
-uv run main.py
+uv run run.py
+
+Usage: python run.py <config.json>
+Generates flat OpenSCAD files from the source files.
+Example: python run.py config/makerworld.json
+```
+
+```bash
+# list config files
+ls config/
+# generate a specific config
+uv run run.py config/makerworld-model-only.json
+# or generate all configs
+for config in config/*.json; do uv run run.py "$config"; done
 ```

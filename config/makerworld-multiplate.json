@@ -1,0 +1,9 @@
+{
+    "input_file": "src/openscad.scad",
+    "output_file": "flat/multiplate.scad",
+    "modifiers": {
+        "DEBUG": "debug.scad",
+        "MULTIPLATE": "multiplate.scad",
+        "DRAW": "empty.scad"
+    }
+}

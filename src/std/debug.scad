@@ -1,0 +1,43 @@
+
+if (_debug) {
+  echo("=== SETTINGS ===");
+  echo("Models:");
+  echo(str("  Charging Tray: ", charging_tray));
+  echo(str("  Test Phone Cutout: ", test_phone_cutout));
+  echo(str("  Test Charger Cutout: ", test_charger_cutout));
+  echo("Phone:");
+  echo(str("  Length: ", phone_length()));
+  echo(str("  Width: ", phone_width()));
+  echo(str("  Height: ", phone_height()));
+  echo(str("  Corner Curve: ", phone_corner_curve()));
+  echo(str("  Corner Smoothness: ", phone_corner_smoothness()));
+  echo(str("  Cover Thickness: ", phone_cover_thickness));
+  echo(str("  Tolerance: ", phone_tolerance));
+  echo(str("  Insert Height: ", phone_insert_height));
+  echo(str("  Camera Cutout Height: ", phone_camera_cutout_height));
+  echo("Charger:");
+  echo(str("  Diameter: ", charger_diameter()));
+  echo(str("  Height: ", charger_height()));
+  echo(str("  Cable Diameter: ", cable_diameter()));
+  echo(str("  Cable Plug Width: ", cable_plug_width()));
+  echo(str("  Charger Cutout Tolerance: ", charger_cutout_tolerance));
+  echo(str("  Cable Cutout Tolerance: ", cable_cutout_tolerance));
+  echo(str("  Cable Plug Clearance: ", cable_plug_clearance));
+  echo(str("  Cable Cutout Angle: ", cable_cutout_angle));
+  echo("Charger Tray:");
+  echo(str("  Top Padding: ", charger_tray_top_padding));
+  echo(str("  Bottom Padding: ", charger_tray_bottom_padding));
+  echo(str("  Wedge Height: ", charger_tray_wedge_height));
+  echo(str("  Tray Height: ", charger_tray_height()));
+  echo("Gridfinity:");
+  echo(str("  Grid Size: ", [gridx, gridy]));
+  echo(str("  Bin Height Setting (gridz): ", gridz));
+  echo(str("  Bin Height (mm): ", bin_height()));
+  // echo(str("  Base Height (mm): ", base_height()));
+  echo(str("  Tray Length (mm): ", tray_length()));
+  echo("Calculated Values:");
+  echo(str("  Auto Gridz (7mm units): ", auto_gridz()));
+  echo(str("  Phone Cutout Height (mm): ", phone_camera_cutout_height));
+  echo(str("  Charger Cutout Height (mm): ", charger_height()));
+  echo("================");
+}

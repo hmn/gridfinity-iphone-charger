@@ -6,7 +6,7 @@ I needed alternative cable routing and support for different covers with camera 
 
 It is rewritten to use latest version of the [gridfinity-rebuilt-openscad](https://github.com/kennetek/gridfinity-rebuilt-openscad) library.
 
-Created a generator script `main.py` to flatten the OpenSCAD files by resolving the `use <...>` and `include <...>` statements recursively. This makes it possible to use in the MakerWorld Parametric Model Maker which does not support these statements.
+Created a generator script `run.py` to flatten the OpenSCAD files by resolving the `use <...>` and `include <...>` statements recursively. This makes it possible to use in the MakerWorld Parametric Model Maker which does not support these statements.
 
 ## Online customiser
 
@@ -43,4 +43,4 @@ Running locally using OpenSCAD.
 
 ## Generating flattened OpenSCAD file
 
-See `flat/README.md` for instructions on how to generate the flattened OpenSCAD file using `main.py`.
+See `flat/README.md` for instructions on how to generate the flattened OpenSCAD file using `run.py`.

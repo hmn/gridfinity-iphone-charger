@@ -38,14 +38,17 @@ jobs:
 
       - name: Generate flat file
         run: |
-          uv run python main.py
+          for file in config/*.json; do
+            echo "Generating flat file for $file..."
+            uv run python run.py "$file"
+          done
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            flat/gridfinity-iphone-charger.scad
+            flat/*.scad
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
