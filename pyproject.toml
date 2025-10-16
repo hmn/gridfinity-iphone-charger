@@ -19,7 +19,7 @@ python_files = "test_*.py"
 [tool.coverage.run]
 source = ["."]
 omit = [
-    "gridfinity-rebuilt-openscad/**",
+    "src/gridfinity-rebuilt-openscad/**",
     "tests/**",
     ".venv/**",
     "venv/**",
@@ -29,7 +29,7 @@ omit = [
 [tool.ruff]
 target-version = "py313"
 line-length = 100
-exclude = ["gridfinity-rebuilt-openscad/**"]
+exclude = ["src/gridfinity-rebuilt-openscad/**"]
 
 [tool.ruff.lint]
 select = [
