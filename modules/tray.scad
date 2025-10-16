@@ -39,13 +39,13 @@ module charger_tray(phone_length, phone_width, charger_diameter, middle_top_padd
 
     union() {
         // Draw the middle cube where the charger lives
-        cube([charger_diameter, phone_width, charger_tray_total_height + 0.02], center=true);
+        cube([charger_diameter, phone_width + 0.02, charger_tray_total_height + 0.02], center=true);
         // Draw the padding on top of the charger for the camera bump
         translate([(charger_diameter/2), 0, 0])
-            cube([middle_top_padding + 0.02, phone_width, charger_tray_total_height], center=true);
+            cube([middle_top_padding + 0.02, phone_width + 0.02, charger_tray_total_height], center=true);
         // Draw the padding below the charger for the wedge
         translate([-(charger_diameter/2 + middle_bottom_padding/2), 0, 0])
-            cube([middle_bottom_padding + 0.02, phone_width, charger_tray_total_height], center=true);
+            cube([middle_bottom_padding + 0.02, phone_width + 0.02, charger_tray_total_height], center=true);
         // Draw the camera bump
         // - remove half of the charger tray height to get to the bottom
         // - add half of the camera height to get to the center of the camera cutout
@@ -54,7 +54,7 @@ module charger_tray(phone_length, phone_width, charger_diameter, middle_top_padd
             echo("camera_cutout_z_shift: ", camera_cutout_z_shift);
         }
         translate([(charger_diameter/2 + middle_top_padding/2 + camera_length/2), 0, camera_cutout_z_shift])
-            cube([camera_length + 0.02, phone_width, camera_height + 0.02], center=true);
+            cube([camera_length + 0.02, phone_width + 0.02, camera_height + 0.02], center=true);
         
         // Draw the wedge to support the phone at an angle
         wedge_x_shift = -(charger_diameter/2 + middle_bottom_padding);
@@ -65,7 +65,10 @@ module charger_tray(phone_length, phone_width, charger_diameter, middle_top_padd
         }
         translate([wedge_x_shift, 0, wedge_z_shift])
             rotate([90, 0, 180])
-                wedge(wedge_length + 0.02, phone_width, wedge_height, debug);
+                wedge(wedge_length + 0.02, phone_width + 0.02, wedge_height + 0.02, debug);
+        // Draw cube under wedge for model to be solid
+        translate([wedge_x_shift - wedge_length/2, 0, -charger_tray_total_height/2 - 0.01 + (charger_tray_total_height - wedge_height)/2])
+            cube([wedge_length + 0.02, phone_width + 0.02, charger_tray_total_height - wedge_height + 0.02], center=true);
     }
 }
 
