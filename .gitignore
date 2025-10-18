@@ -17,3 +17,5 @@ flat/*.scad
 .pytest_cache/
 .ruff_cache/
 .uv/
+src/openscad.json
+generated/
