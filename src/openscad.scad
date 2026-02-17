@@ -115,10 +115,6 @@ charger_tray_bottom_padding = 4.0;
 // Height of the wedge at the bottom of the tray to support the phone at an angle when you need to get it out of the tray
 charger_tray_wedge_height = 6.0;
 
-/* [Hidden] */
-
-include <gridfinity-rebuilt-openscad/src/core/standard.scad>
-
 /* [Gridfinity] */
 
 // Number of bases along x-axis
@@ -152,6 +148,10 @@ chamfer_height_holes = true;
 printable_hole_top = true;
 
 hole_options = bundle_hole_options(refined_holes, magnet_holes, screw_holes, crush_ribs, chamfer_height_holes, printable_hole_top);
+
+/* [Hidden] */
+
+include <gridfinity-rebuilt-openscad/src/core/standard.scad>
 
 include <gridfinity-rebuilt-openscad/src/core/gridfinity-rebuilt-utility.scad>
 include <gridfinity-rebuilt-openscad/src/core/gridfinity-rebuilt-holes.scad>
